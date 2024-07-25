@@ -1,0 +1,25 @@
+<!doctype html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="main.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Change Item</title>
+</head>
+<body>
+<div th:replace="~{nav.html :: navbar}"></div>
+<div class="detail">
+    <h4>상세 페이지</h4>
+    <img src="https://placehold.co/300">
+    <form action="/update" method="POST">
+        <input type="hidden" name="id" th:value="${item.id}"/>
+        <input name="title" th:value="${item.title}"/>
+        <input name="price" type="number" th:value="${item.price}"/>
+        <button type="submit">수정하기</button>
+    </form>
+</div>
+
+</body>
+</html>
