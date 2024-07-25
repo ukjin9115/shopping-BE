@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import ukgo.shop.service.MemberService;
 import ukgo.shop.service.MyUserDetailsService;
-
+//로그인기능추가요
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
