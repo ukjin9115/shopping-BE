@@ -17,11 +17,12 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/signup")
-    public String signup(Authentication auth){
-        if (auth.isAuthenticated()){
+    public String signup(Authentication auth) {
+        if (auth != null && auth.isAuthenticated()) {
             return "redirect:/list";
+        } else {
+            return "signup.html";
         }
-        return "signup.html";
     }
 
     @PostMapping("/register")
@@ -32,6 +33,7 @@ public class MemberController {
 
     @GetMapping("/login")
     public String login(){
+
         return "login.html";
     }
 //    @PreAuthorize("isAuthenticated()")

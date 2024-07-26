@@ -1,10 +1,16 @@
 package ukgo.shop.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ukgo.shop.entity.Item;
+import ukgo.shop.entity.Member;
 import ukgo.shop.repository.ItemRepository;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,16 +19,28 @@ import java.util.Optional;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private static final String UPLOAD_DIR = "C:/shopupload/";
 
-    public void saveItem(String title, Integer price) {
+    public void saveItem(String title, Integer price, MultipartFile file, Member member) throws IOException {
         validateTitle(title);
         validatePrice(price);
 
         Item item = new Item();
         item.setTitle(title);
         item.setPrice(price);
-        System.out.println(title);
-        System.out.println(price);
+        item.setMember(member);
+
+        if (file != null && !file.isEmpty()) {
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+            File dest = new File(uploadDir, fileName);
+            file.transferTo(dest);
+            item.setFilePath(fileName);
+        }
+
         itemRepository.save(item);
     }
 
@@ -34,7 +52,7 @@ public class ItemService {
         Optional<Item> result = itemRepository.findById(id);
         return result.orElse(null);
     }
-    // 아이템 업데이트
+
     public void updateItem(Integer id, String title, Integer price) {
         validateTitle(title);
         validatePrice(price);
@@ -46,24 +64,27 @@ public class ItemService {
             item.setPrice(price);
             itemRepository.save(item);
         } else {
-            // 아이템이 존재하지 않는 경우 예외 처리
             throw new RuntimeException("Item not found");
         }
     }
 
+    public void deleteItem(Integer id) {
+        itemRepository.deleteById(id);
+    }
 
-    // 제목 유효성 검사
+    public Page<Item> findPageBy(int page, int pageSize) {
+        return itemRepository.findPageBy(PageRequest.of(page - 1, pageSize));
+    }
+
     private void validateTitle(String title) {
         if (title == null || title.length() > 20) {
             throw new IllegalArgumentException("Title must be between 1 and 20 characters.");
         }
     }
 
-    // 가격 유효성 검사
     private void validatePrice(Integer price) {
         if (price == null || price < 0) {
             throw new IllegalArgumentException("Price must be a non-negative integer.");
         }
     }
-
 }

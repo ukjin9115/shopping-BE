@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -18,16 +19,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf) -> csrf.disable());
+        http.csrf(csrf -> csrf.disable());
 
-        http.authorizeHttpRequests((authorize) ->
-                authorize.requestMatchers("/**").permitAll()
+        http.authorizeHttpRequests(authorize ->
+                authorize
+                        .requestMatchers("/signup", "/register", "/login").permitAll()
+                        .requestMatchers("/write", "/add", "/change/**", "/update", "/item/**").authenticated()
+                        .anyRequest().permitAll()
         );
-        http.formLogin((formLogin) -> formLogin.loginPage("/login")
+        http.formLogin(formLogin -> formLogin.loginPage("/login")
                 .defaultSuccessUrl("/list")
-//                .failureUrl("/fail")
         );
-        http.logout( logout -> logout.logoutUrl("/logout") );
+        http.logout(logout -> logout.logoutUrl("/logout"));
         return http.build();
     }
 }
