@@ -3,6 +3,7 @@ package ukgo.shop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ukgo.shop.entity.Item;
@@ -66,6 +67,10 @@ public class ItemService {
         } else {
             throw new RuntimeException("Item not found");
         }
+    }
+    public Page<Item> searchItems(String searchText, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        return itemRepository.searchItems(searchText, pageable); // 검색 메서드 호출
     }
 
     public void deleteItem(Integer id) {

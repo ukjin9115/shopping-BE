@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import ukgo.shop.entity.Item;
 import ukgo.shop.entity.Member;
 import ukgo.shop.entity.Comment;
+import ukgo.shop.repository.ItemRepository;
 import ukgo.shop.service.ItemService;
 import ukgo.shop.service.MemberService;
 import ukgo.shop.service.CommentService;
@@ -24,6 +25,7 @@ public class ItemController {
     private final ItemService itemService;
     private final MemberService memberService;
     private final CommentService commentService;
+    private final ItemRepository itemRepository;
 
     @GetMapping("/list")
     public String list(@RequestParam(defaultValue = "1") int page, Model model) {
@@ -117,4 +119,15 @@ public class ItemController {
         model.addAttribute("items", result);
         return "list.html";
     }
+    @PostMapping("/search")
+    public String postSearch(@RequestParam String searchText, @RequestParam(defaultValue = "1") int page, Model model) {
+        int pageSize = 3; // 페이지당 아이템 수
+        Page<Item> result = itemService.searchItems(searchText, page, pageSize); // 검색 결과를 페이지로 반환하는 서비스 메서드 호출
+        model.addAttribute("items", result.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", result.getTotalPages());
+        model.addAttribute("searchText", searchText); // 검색어도 모델에 추가
+        return "list.html";
+    }
+
 }
