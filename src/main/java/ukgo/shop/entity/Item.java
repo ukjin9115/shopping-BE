@@ -17,7 +17,6 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String title;
     private Integer price;
     private String filePath;
