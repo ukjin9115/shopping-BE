@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <link href="main.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -12,10 +12,19 @@
 <div class="detail">
     <h4>상세페이지</h4>
     <img th:src="@{/uploads/{file}(file=${item.filePath})}">
-    <!--    <img src="https://placehold.co/300">-->
     <h4 th:text="${item.title}">Title</h4>
     <p th:text="${item.price+'원'}">Price</p>
     <p th:text="'판매자: ' + ${item.member.displayName}">작성자</p>
+</div>
+<div class="buyorder">
+    <form id="orderForm" action="/order" method="post">
+        <input type="hidden" name="itemId" th:value="${item.id}">
+        <input type="hidden" name="price" th:value="${item.price}">
+        <label for="count">수량:</label>
+        <input id="count" name="count" type="number" min="1" value="1" required>
+        <p id="totalPrice">총 가격: <span th:text="${item.price}">0</span>원</p>
+        <button type="submit">주문하기</button>
+    </form>
 </div>
 <div class="comments">
     <h4>댓글</h4>
@@ -25,6 +34,7 @@
         </li>
     </ul>
 </div>
+
 <div class="review" th:if="${username}">
     <form action="/comment" method="POST">
         <input name="content" placeholder="댓글을 입력하세요">
@@ -33,5 +43,27 @@
         <button type="submit">전송</button>
     </form>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const countInput = document.getElementById('count');
+        const totalPriceElement = document.getElementById('totalPrice').querySelector('span');
+        const price = parseInt(document.querySelector('input[name="price"]').value, 10);
+
+        function updateTotalPrice() {
+            const count = parseInt(countInput.value, 10);
+            const totalPrice = count * price;
+            totalPriceElement.textContent = totalPrice + '원';
+        }
+
+        countInput.addEventListener('input', function () {
+            if (countInput.value < 1) {
+                countInput.value = 1;
+            }
+            updateTotalPrice();
+        });
+
+        updateTotalPrice(); // 초기 총 가격 계산
+    });
+</script>
 </body>
 </html>

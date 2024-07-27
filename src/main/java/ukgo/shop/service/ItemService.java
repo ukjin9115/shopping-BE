@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import ukgo.shop.entity.Item;
 import ukgo.shop.entity.Member;
 import ukgo.shop.repository.ItemRepository;
+import ukgo.shop.repository.MemberRepository;
+import ukgo.shop.repository.SalesRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +22,9 @@ import java.util.Optional;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final MemberRepository memberRepository;
+    private final SalesRepository salesRepository;
+
     private static final String UPLOAD_DIR = "C:/shopupload/";
 
     public void saveItem(String title, Integer price, MultipartFile file, Member member) throws IOException {
