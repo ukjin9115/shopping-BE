@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,4 +21,8 @@ public class Comment {
     @Column(length = 100)
     private String content;
     private Integer parentId;
+
+    @CreationTimestamp
+    LocalDateTime created;
+
 }
