@@ -70,13 +70,17 @@ public class ItemController {
     }
 
     @PostMapping("/update")
-    public String update(@RequestParam Integer id, @RequestParam String title, @RequestParam Integer price, Authentication auth) {
+    public String update(@RequestParam Integer id,
+                         @RequestParam String title,
+                         @RequestParam Integer price,
+                         @RequestParam("file") MultipartFile file,
+                         Authentication auth) throws IOException {
         if (auth == null || !auth.isAuthenticated()) {
             return "redirect:/login";
         }
         Item item = itemService.findItemById(id);
         if (item != null && item.getMember().getUsername().equals(auth.getName())) {
-            itemService.updateItem(id, title, price);
+            itemService.updateItem(id, title, price, file);
             return "redirect:/list";
         } else {
             return "error.html";

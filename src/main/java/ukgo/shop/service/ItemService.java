@@ -59,7 +59,7 @@ public class ItemService {
         return result.orElse(null);
     }
 
-    public void updateItem(Integer id, String title, Integer price) {
+    public void updateItem(Integer id, String title, Integer price, MultipartFile file) throws IOException {
         validateTitle(title);
         validatePrice(price);
 
@@ -68,6 +68,18 @@ public class ItemService {
             Item item = optionalItem.get();
             item.setTitle(title);
             item.setPrice(price);
+
+            if (file != null && !file.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                File uploadDir = new File(UPLOAD_DIR);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+                File dest = new File(uploadDir, fileName);
+                file.transferTo(dest);
+                item.setFilePath(fileName);
+            }
+
             itemRepository.save(item);
         } else {
             throw new RuntimeException("Item not found");
